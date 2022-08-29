@@ -8,41 +8,45 @@
 class Account {
     constructor(initialAmount) {
         if (initialAmount > 10000) {
-            this._balanceAmt = initialAmount;
+            this.balanceAmt = initialAmount;
+        } else if (initialAmount < 10000) {
+            console.log('Balance needs to be more than 10000');
         } else {
-            this._balanceAmt = 10000;
+            this.balanceAmt = 10000;
         }
-        this._numberOfWithdrawals = 0;
-        this._numberOfDeposits = 0;
+        this.numberOfWithdrawals = 0;
     }
     get balance() {
-        return this._balanceAmt;
+        return this.balanceAmt;
     }
+
+    static print (action, amount, balance, fees) {
+        const date = new Date;
+        console.log (`${action}: ${amount}, Balance: ${balance}, Fees: ${fees} Date: ${date}`)
+    }
+
     withdraw (amount) {
-        const date = new Date();
-        if (amount < this._balanceAmt && this._numberOfWithdrawals <= 2) {
-            this._balanceAmt = this._balanceAmt - amount;
-            this._numberOfWithdrawals += 1;
-            console.log('Withdrawal:', amount, 'Balance: ', this._balanceAmt, 'Date:', date)
-        } else if (amount < this._balanceAmt && this._numberOfWithdrawals > 2) {
-            this._balanceAmt = this._balanceAmt - (1.05 * amount);
-            this._numberOfWithdrawals += 1;
-            console.log('Withdrawal1:', amount, 'Balance: ', this._balanceAmt, 'Date:', date)
+        if (amount < this.balanceAmt && this.numberOfWithdrawals <= 2) {
+            this.balanceAmt = this.balanceAmt - amount;
+            this.numberOfWithdrawals += 1;
+            Account.print('Withdrawal', amount, this.balanceAmt, 0);
+        } else if (amount < this.balanceAmt && this.numberOfWithdrawals > 2) {
+            this.balanceAmt = this.balanceAmt - (1.05 * amount);
+            this.numberOfWithdrawals += 1;
+            Account.print('Withdrawal', amount, this.balanceAmt, amount * 0.05);
         }
         else {
-            console.log('Insufficient Balance', 'Date:', date);
+            console.log('Insufficient Balance');
         }
     }
 
     deposit (amount) {
-        const date = new Date;
-        this._balanceAmt = this._balanceAmt + amount;
-        this._numberOfDeposits += 1;
-        console.log('Deposit:', amount, 'Balance: ', this._balanceAmt, 'Date (ms):', 'Date:', date)
+        this.balanceAmt = this.balanceAmt + amount;
+        Account.print('Deposit', amount, this.balanceAmt, 0);
     }
 }
 
-const savingsAcct = new Account(20000);
+const savingsAcct = new Account();
 savingsAcct.deposit(2000);
 savingsAcct.deposit(50000);
 savingsAcct.withdraw(5000);
@@ -51,4 +55,3 @@ savingsAcct.withdraw(3000);
 savingsAcct.withdraw(3000);
 savingsAcct.withdraw(5000);
 console.log(savingsAcct);
-
